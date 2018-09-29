@@ -1,5 +1,5 @@
 # Emacs-Project-manager
-A project manager for Emacs 
+A tiny project manager for Emacs , just to switch projects and add/remove buffers from project.
 
 
 -   Put `(load-file "~/.emacs.d/start.el")` into `.emacs`
