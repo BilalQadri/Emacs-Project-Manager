@@ -1,5 +1,5 @@
 # Emacs-Project-manager
-A project manager for Emacs which works with https://github.com/BilalQadri/CLWs
+A project manager for Emacs 
 
 
 -   Put `(load-file "~/.emacs.d/start.el")` into `.emacs`
