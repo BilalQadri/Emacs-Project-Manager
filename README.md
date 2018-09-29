@@ -6,6 +6,6 @@ A tiny project manager for Emacs , just to switch projects and add/remove buffer
 
 -   Extract all files to `~/.emacs.d/`
 
--  `(setf *root* "/PATH/TO/ROOT/Folder")
+-  Put `(setf *root* "/PATH/TO/ROOT/Folder")
    (load-projects *root*)
    (switch-project (read-from-minibuffer "Select project: "))`   into `start.el`
