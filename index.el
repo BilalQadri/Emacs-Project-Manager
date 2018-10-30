@@ -7,17 +7,48 @@
 (defvar *current-project* nil)
 
 
+(defun save-global ()
+  (let ((file "~/.emacs.d/.global"))
+    (when (file-exists-p file)
+      (delete-file file))
+    (with-temp-file file
+      (insert (pp (list *root* *current-project*))))))
+
+(defun load-global ()
+  (let ((file "~/.emacs.d/.global"))
+    (cond ((file-exists-p file)
+	   (let ((data (eval-file file)))
+	     (setf *root* (car data))
+	     (setf *current-project* (cadr data))))
+	  (t
+	   (set-root (read-from-minibuffer "Path: ")))))
+    (load-projects *root*)
+    (switch-project *current-project*))
+
+
+(defun refresh-root ()
+  (interactive)
+  (if (directory? *root*)
+      (load-projects *root*)
+    (message "probably, root is not set.")))
+
 (defun set-root (path)
-  (if (directory? path)
-      (progn (setf *root* path)
-	     (load-projects *root*))
-    (message "directory  does not exist.")))
+  (interactive "sPath: ")
+  (cond ((directory? path)
+	 (setf *root* path)
+	 (load-projects *root*)
+	 (switch-project (read-from-minibuffer "Select Project: ")))
+	(t 
+	 (message "directory does not exist.")
+	 (sleep-for 1)
+	 (set-root (read-from-minibuffer "Path: ")))))
+
+
 
 ;(eval-file (filename-as-path (project-dir) ".project"))
 
 (defun eval-file (file)
   "Execute FILE and return the result of the last expression."
-
       (with-temp-buffer
         (insert-file-contents file)
         (read (buffer-string))))
@@ -54,10 +85,7 @@
 	   (message "It is a special buffer.")))
     
     
-    (with-temp-file init-file                ;; writing buffers list to init file
-     ; (insert-file-contents init-file)
-      
-      (insert (pp *buffers*)))))
+    (make-init *buffers*)))
 
 (defun remove-buffer ()
   (interactive)
@@ -72,28 +100,33 @@
       (delete-file init-file))
 
     (delete (buffer-path) *buffers*)
-    
-    
-    (with-temp-file init-file                ;; writing buffers list to init file
-      ;(insert-file-contents init-file)
-      
-      (insert (pp *buffers*)))))
+        
+    (make-init *buffers*)))
 
+(defun make-init (data)
+  (with-temp-file (filename-as-path (project-dir) ".project")
+      (insert (pp data))))
 
 (defun switch-project (project)
   (interactive "sProject: ")
-  (if (member project *projects*)
-      (progn
-	(setf *current-project* project)
-	(kill-open-buffers)
-	(cond ((not (null (file? (filename-as-path (project-dir) ".project"))))
-	       (setf *buffers* (eval-file (filename-as-path (project-dir) ".project")))
-	       (open-project-buffers *buffers*))
-	      (t
-	       (setf *buffers* '()))))
+  (cond ((member project *projects*)
+	 (setf *current-project* project)
+	 (kill-open-buffers)
+	 (let ((init-file (filename-as-path (project-dir) ".project")))
+	   (cond ((not (null (file? init-file)))
+		  (setf *buffers* (eval-file (filename-as-path (project-dir) ".project")))
+		  (open-project-buffers *buffers*))
+		 (t
+		  (setf *buffers* '())
+		  (make-init '())))             ;; first time
+	   (find-file init-file))
+	 (save-global))
     ;;	(compile-project))
-    (message (format "Sorry, Project \'%s\'  does not exist or may be Root is not set accordingly." project))))
-
+	(t
+	 (message (format "Sorry, Project \'%s\'  does not exist or may be Root is not set accordingly." project))
+	 (sleep-for 1)
+	 (switch-project (read-from-minibuffer "Project: ")))))
+  
 (defun s-right (idx str)
   (let ((len (length str)))    
     (substring str (* idx -1) len)))
