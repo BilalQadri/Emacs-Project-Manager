@@ -2,9 +2,8 @@
 A (tiny) project manager for Emacs editor to make work flow better and intuitive.
 
 -   Extract files into to initialization folder i.e `.emacs.d`.
--   Put `(load-file "~/.emacs.d/start.el")` into init file `.emacs` ... thats it
+-   Put `(load-file "PATH-TO-INIT-Folder/start.el")` into init file `.emacs` ... thats it
 
--   Extract all files to `~/.emacs.d/`
 
 # Work-Flow
 
