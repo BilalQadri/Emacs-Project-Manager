@@ -1,5 +1,6 @@
 
 ;; initialization
 
-(load-file "~/.emacs.d/dir.el")
-(load-file "~/.emacs.d/index.el")
+(load-file "dir.el")
+(load-file "index.el")
+(load-global)
