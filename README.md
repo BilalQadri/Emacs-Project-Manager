@@ -1,4 +1,4 @@
-# Emacs-Project-manager
+# Emacs-Project-manager ![Logo](https://github.com/BilalQadri/Emacs-Project-Manager/blob/master/epm.png)
 A (tiny) project manager for Emacs editor to make work flow better and intuitive.
 
 -   Extract files into to initialization folder i.e `.emacs.d`.
